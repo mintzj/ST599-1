@@ -9,10 +9,10 @@ library(foreign)
 
 #'  dplyr package provides some utility funcions for sorting data
 #'  (According to charlotte it is faster for large data)
-install.packages('dplyr')
+#install.packages('dplyr')
 library(dplyr)
 
-stars <- read.arff(file = 'Z:/ST599/Project 1/code/data/AstronomyTrainingData.txt')
+stars <- read.arff(file = 'AstronomyTrainingData.txt')
 
 #  identify the 25 levels of star: (Column 87 holds the names.)
 levels(stars$class)
