@@ -36,11 +36,55 @@ summary(star_km)
 #length(star_names)
 star_km$cluster
 table(factor(star_km$cluster))
-hist(star_km$cluster)
+hist(star_km$cluster, 25)
+
+#6 clusters:
+centers <- 10
+star_km <- kmeans(complete_stars[c(-1,-dim(complete_stars)[2])], centers, iter.max = 20, nstart = 1)
+#star_km$cluster
+#table(factor(star_km$cluster))
+hist(star_km$cluster, centers)
+
+#Is there multicolinearity?
+install.packages('faraway')
+library(faraway)
+#Calculate the variance inflation factors (a measure of multicolinearity)
+complete_stars_noname <- complete_stars[c(-1,-dim(complete_stars)[2])]
+vifs <- (vif(complete_stars_noname))
+vifs
+plot(vifs)
+#identify(vifs)
+identify(vifs, labels = names(vifs), atpen = T)
+identify(vifs, labels = names(vifs))
+identify(vifs)
+#  Colinearity Suspects in order::  
+#  "eclpoly_p_pulse", "eclpoly_p_pulse_initial", "std" "stetson_j", "amplitude"
 
 
+View(complete_stars)
+sorted_vifcolumns <- arrange(complete_stars_noname[,c(1,18,19,83,84)],amplitude)
+View(complete_stars_noname[,c(1,18,19,83,84)])
+
+e <- eigen(t(as.matrix(complete_stars_noname))%*%as.matrix(complete_stars_noname))
+signif(e$values,3)
+#  There is at least one enormous colinearity. 
+#  It was at least 2.0e20 before correction.
+var_names <-  names(complete_stars)
+sort(var_names)
 
 
+#  Correcting for variance inflation:
+# Remove ID, Remove Name
+star_low_vif <- complete_stars[c(-1,-dim(complete_stars)[2])]
+star_low_vif <- star_low_vif[c(-18,-19)]
+
+e <- eigen(t(as.matrix(star_low_vif))%*%as.matrix(star_low_vif))
+signif(e$values,3)
+
+low_vif <- (vif(star_low_vif))
+plot(low_vif)
+identify(low_vif)
+View(star_low_vif[,c(1,81,82)])
 # Sharm's Example ---------------------------
 
 #cancerData<-read.table(file="14cancer.xtrain",sep="")
