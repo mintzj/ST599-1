@@ -27,6 +27,23 @@ centers <- 25
 
 star_km <- kmeans(complete_stars[c(-1,-dim(complete_stars)[2])], centers, iter.max = 20, nstart = 1)
 summary(star_km)
+str(star_km)
+found_centers <- star_km$centers
+#  There are 25 centers, one for each cluster.  The center contains 85 means representing each variable.
+
+# I can make one of these by:  
+#  1)  Sorting the data by star type
+#  2)  taking the mean for each star type, for each variable.
+#  mapply?
+grouped_complete_stars <- group_by(complete_stars, class)
+sum_stars <- summarise(grouped_complete_stars, amplitude = mean(amplitude))
+#sum_stars <- complete_stars %>% group_by(class) %>% summarise_each(funs(mean))
+sum_stars <- stars %>% group_by(class) %>% summarise_each(funs(mean(., na.rm=TRUE)))
+
+summarise(grouped_complete_stars, amplitude = mean(amplitude))
+df %>% group_by(grp) %>% summarise_each(funs(mean))
+#df %>% group_by(grp) %>% summarise_each(funs(mean))
+
 #star_km$size
 #star_km$centers
 #star_km$tot.withinss
