@@ -129,7 +129,50 @@ View(cbind(start.x, start.y))
 ?kmeans
 
 # Top 30 Vars. ---------------------------
-pca_out
+
+#Select the top n variables from PCA to use.
+n <- 20
+n_star_names <- as.character( pca_out[1:n,1] )
+#View(stars[as.character( pca_out[1:n,1] ) ])
+
+
+#Sort out the complete stars.
+complete_stars <- stars %>% filter(complete.cases(.)) 
+
+# Create a sorted list of training stars, by type.
+sum_stars <- stars %>% group_by(class) %>% summarise_each(funs(mean(., na.rm=TRUE)))
+
+#
+
+
+top_var_star_km  <-  kmeans(as.matrix(complete_stars[,n_star_names]), 
+                         centers = as.matrix(sum_stars[,n_star_names]), iter.max = 200,
+                         algorithm = "Lloyd")
+
+#View(top_var_star_km$cluster)
+# Result of clustering using the best n variables, with means of clusters drawn from training.
+#table(top_var_star_km$cluster) 
+plot(table(top_var_star_km$cluster))
+plot(table(stars$class))
+
+
+barplot(table(top_var_star_km$cluster))
+barplot(table(stars$class), las = 1, cex.names = 0.5, )
+barplot(table(complete_stars$class), las = 1, cex.names = 0.5, )
+
+
+barplot(cbind(table(top_var_star_km$cluster), table(stars$class)), las = 1, cex.names = 0.5, beside = T, )
+#barplot(summary(stars$class), horiz = TRUE, las = 1, cex.names = 0.5)
+
+results <- as.data.frame( cbind(names = star_names, predicted = table(top_var_star_km$cluster), actual = table(stars$class)))
+View(results)
+barplot(as.numeric(results$actual), horiz = T, las = 1, names.arg = results$names, cex.names= 0.5, main = "Actual")
+barplot(as.numeric(results$predicted), horiz = T, las = 1, names.arg = results$names, cex.names= 0.5, main = "Predicted")
+barplot(summary(stars$class), horiz = TRUE, las = 1, cex.names = 0.5, main = "Training Stars")
+barplot(summary(complete_stars$class), horiz = TRUE, las = 1, cex.names = 0.5, main = "Complete Stars")
+
+
+
 
 
 # Working with the whole data ---------------------------
