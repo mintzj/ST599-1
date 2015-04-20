@@ -203,3 +203,9 @@ pca.counts <- c(pca.1.count, pca.2.count, pca.3.count, pca.4.count, pca.5.count,
 
 # And see our results:
 sort(table(pca.counts),decreasing=TRUE)
+pca_out <- (sort(table(pca.counts),decreasing=T))
+is.data.frame(pca.counts)
+pca_out <- setNames(object = as.data.frame(sort(table(pca.counts),decreasing = T)), nm = "count")
+View(pca_out)
+best_10 <- head(pca_out, n = 10)
+View(best_10)
