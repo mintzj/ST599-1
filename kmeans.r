@@ -128,6 +128,10 @@ points(km.2$centers, pch=20, cex=2, col="orange")
 View(cbind(start.x, start.y))
 ?kmeans
 
+# Top 30 Vars. ---------------------------
+pca_out
+
+
 # Working with the whole data ---------------------------
 # The location of this file will vary for you.  I didn't upload it to github, since it is so large.
 # I suppose we could upload it if we want.
